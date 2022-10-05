@@ -1,24 +1,58 @@
-import logo from './logo.svg';
+import { useCallback, useEffect, useState } from 'react';
+import Header from './components/Header';
+import BreadCrumbs from './components/BreadCrumbs';
+import FileList from './components/FileList';
+import VideoPlayer from './components/VideoPlayer';
 import './App.css';
 
 function App() {
+  const [fileList, setFileList] = useState({ files: [], directories: [] });
+  const [playerFileExt, setPlayerFileExt] = useState('.mp4');
+  const [playerFile, setPlayerFile] = useState('');
+  const [pathStack, setPathStack] = useState([]);
+
+  const fetchFiles = useCallback(async () => {
+    let queryString = '';
+    let basePath = pathStack.join('/');
+    queryString = `?path=${basePath}`
+    const files = await fetch(`${process.env.REACT_APP_API_SERVER}/files/list/${queryString}`);
+    setFileList(await files.json());
+  }, [pathStack])
+
+  useEffect(() => {
+    fetchFiles();
+  }, [fetchFiles]);
+
+  const changePath = (path) => {
+    setPathStack([...pathStack, path]);
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <Header />
+      <div className='container'>
+        <div className='row'>
+          <div className="col-12">
+            <BreadCrumbs pathStack={pathStack} setPathStack={setPathStack} />
+          </div>
+          <div className='col-md-8 col-sm-12'>
+            <div className='player-wrap ratio ratio-16x9'>
+              {playerFile && <VideoPlayer playerFile={playerFile} playerFileExt={playerFileExt} />}
+            </div>
+          </div>
+          <div className='col-md-4 col-sm-12'>
+            <FileList
+              list={fileList}
+              refreshList={changePath}
+              playFile={setPlayerFile}
+              setExt={setPlayerFileExt}
+              pathStack={pathStack}
+              setPathStack={setPathStack}
+            />
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
 
