@@ -33,14 +33,18 @@ function App() {
       <div className='container'>
         <div className='row'>
           <div className="col-12">
-            <BreadCrumbs pathStack={pathStack} setPathStack={setPathStack} />
+            <BreadCrumbs 
+            pathStack={pathStack} 
+            setPathStack={setPathStack}
+            setPlayerFile={setPlayerFile} 
+            />
           </div>
-          <div className='col-md-8 col-sm-12'>
+          <div className={`col-md-8 col-sm-12 ${playerFile === '' ? 'd-none':''}`}>
             <div className='player-wrap ratio ratio-16x9'>
               {playerFile && <VideoPlayer playerFile={playerFile} playerFileExt={playerFileExt} />}
             </div>
           </div>
-          <div className='col-md-4 col-sm-12'>
+          <div className={`${playerFile === '' ? 'col-12':'col-md-4 col-sm-12 '}`}>
             <FileList
               list={fileList}
               refreshList={changePath}
@@ -48,6 +52,7 @@ function App() {
               setExt={setPlayerFileExt}
               pathStack={pathStack}
               setPathStack={setPathStack}
+              playerFile={playerFile}
             />
           </div>
         </div>

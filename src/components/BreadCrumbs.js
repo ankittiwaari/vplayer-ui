@@ -12,6 +12,7 @@ const BreadCrumbs = (props) => {
                 const end = e.target.getAttribute('index');
                 const pathStackNew = props.pathStack.slice(0, end);
                 props.setPathStack([...pathStackNew])
+                props.setPlayerFile('')
             }}
         >
             {item}

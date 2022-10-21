@@ -1,16 +1,20 @@
 function FileList(props) {
+    const listClass = props.playerFile === '' ? 'file-list_item col-md-4 col-sm-3' : 'col-12';
+    let listInnerClass = 'file-list_inner-wrap p-2 mt-3 d-flex file-list_inner-wrap m-2 align-items-center justify-content-center';
     let count = 0;
-    let listHtmlDirs = props.list.directories.map(listItem => {
-        return <li
+    const listHtmlDirs = props.list.directories.map(listItem => {
+        return <div
             role="button"
-            className="list-group-item"
+            className={listClass}
             onClick={props.refreshList.bind(null, listItem)}
             key={++count}>
-            <img src="folder.svg" alt=""/>{listItem}
-        </li>
+            <div className={listInnerClass}>
+                {listItem}
+            </div>
+        </div>
     });
-    let listHtmlFiles = props.list.files.map(listItem => {
-        return <li className="list-group-item"
+    const listHtmlFiles = props.list.files.map(listItem => {
+        return <div className={listClass}
             role="button"
             onClick={() => {
                 const filePath = encodeURI(`${props.pathStack.join('/')}/${listItem}`);
@@ -20,14 +24,16 @@ function FileList(props) {
                 props.setExt(ext);
             }}
             key={++count}>
-            <img src="video.svg" alt=""/>{listItem}
-        </li>
+            <div className={listInnerClass}>
+                {listItem}
+            </div>
+        </div>
     });
     return (
-        <ul className="list-group file-list">
+        <div className="row">
             {listHtmlDirs}
             {listHtmlFiles}
-        </ul>
+        </div>
     );
 }
 export default FileList;
